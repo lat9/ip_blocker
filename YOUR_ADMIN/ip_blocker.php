@@ -227,21 +227,23 @@ switch ($ip_block_action) {
   }  // End password settings
 
   case 'enable': {    
-    if (isset($_POST) && isset($_POST['enable'])) {
+    if (isset($_POST) && isset($_POST['enable']) && isset($_POST['lockout_count'])) {  //-v2.0.1c
       $message_show = true;
       
-      $enable_ = (bool) zen_db_prepare_input($_POST['enable']);
+      $enable_ = (int)$_POST['enable'];  //-v2.0.1c
+      $lockout_count = (int)$_POST['lockout_count'];  //-v2.0.1a
       
-      // Update enable setting
-      $db->Execute('UPDATE `' . TABLE_IP_BLOCKER . '` SET ib_power="' . ($enable_ ? 1 : 0) . '" WHERE ib_id=1');
+      // Update enable and lockout count settings
+      $db->Execute("UPDATE " . TABLE_IP_BLOCKER . " SET ib_power = $enable_, ib_lockout_count = $lockout_count WHERE ib_id = 1");  //-v2.0.1c
       
       $message_status = true;
-      $message = ($enable_) ? IB_FEATURE_ENABLED : IB_FEATURE_DISABLED;
+      $message = ((bool)$enable_) ? IB_FEATURE_ENABLED : IB_FEATURE_DISABLED;  //-v2.0.1c
     }
     
     // Get enable setting
-    $enable = $db->Execute('SELECT ib_power FROM `' . TABLE_IP_BLOCKER . '` WHERE ib_id=1');
-    $enabled = (bool) $enable->fields['ib_power'];
+    $enable = $db->Execute('SELECT ib_power, ib_lockout_count FROM `' . TABLE_IP_BLOCKER . '` WHERE ib_id=1');  //-v2.0.1c
+    $enabled = (bool)$enable->fields['ib_power'];
+    $lockout_count = $enable->fields['ib_lockout_count'];
     echo IP_BLOCKER_MENU_POWER; 
 ?>
   </div>
@@ -254,7 +256,7 @@ switch ($ip_block_action) {
   }
 ?>
   <div class="d_power d_w">
-    <?php echo zen_draw_form('enable', FILENAME_IP_BLOCKER, 'g=enable') . zen_draw_radio_field('enable', '1', $enabled) . '&nbsp;&nbsp;<span style="color:blue">' . IB_ON . '</span>&nbsp;&nbsp;' . zen_draw_radio_field('enable', '0', !$enabled) . '&nbsp;&nbsp;<span style="color:red">' . IB_OFF . '</span>'; ?>
+    <?php echo zen_draw_form('enable', FILENAME_IP_BLOCKER, 'g=enable') . zen_draw_radio_field('enable', '1', $enabled) . '&nbsp;&nbsp;<span style="color:blue">' . IB_ON . '</span>&nbsp;&nbsp;' . zen_draw_radio_field('enable', '0', !$enabled) . '&nbsp;&nbsp;<span style="color:red">' . IB_OFF . '</span><br /><br />' . IP_BLOCKER_LOCKOUT_COUNT . '&nbsp;&nbsp;' . zen_draw_input_field('lockout_count', $lockout_count, 'style="width: 2em;"'); //-v2.0.1c ?>
       <div style="margin-top:35px"><?php echo zen_image_submit('button_update.gif', IMAGE_UPDATE); ?></div>
     </form>
   </div>
@@ -280,9 +282,10 @@ switch ($ip_block_action) {
           `ib_password` varchar(50) NOT NULL,
           `ib_power` tinyint(1) DEFAULT 1,
           `ib_date` date NOT NULL,
+          ib_lockout_count int(5) NOT NULL default 0,
           PRIMARY KEY  (`ib_id`)
         ) ENGINE=MyISAM DEFAULT CHARSET=" . DB_CHARSET
-      );
+      );  //-v2.0.1c
       
       $db->Execute("
         INSERT INTO `" . TABLE_IP_BLOCKER . "` VALUES(
@@ -293,7 +296,8 @@ switch ($ip_block_action) {
           '',
           '" . ip_blocker_md5('123456') . "',
           '1',
-          '" . date('Y-m-d') . "'
+          '" . date('Y-m-d') . "',
+          0
         )
       ");
       

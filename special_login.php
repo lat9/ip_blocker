@@ -5,6 +5,8 @@ if (isset($_SESSION['ip_blocker_pass']) && $_SESSION['ip_blocker_pass'] == TRUE)
   header('Location: ./index.php');
 }
 
+if (isset($_SESSION['ip_blocker_fail'])) exit();  //-v2.0.1a
+
 $message_show = FALSE;
 
 if (isset($_POST) && isset($_POST['pwd'])) {
@@ -17,11 +19,27 @@ if (isset($_POST) && isset($_POST['pwd'])) {
   } else {
     $password = md5(md5($password . '_secure_key'));
     
-    $ib_password = $db->Execute('SELECT ib_password FROM `' . TABLE_IP_BLOCKER . '` WHERE ib_id=1');
-    $ib_password = $ib_password->fields['ib_password'];
+    $lockout_field = ($sniffer->field_exists(TABLE_IP_BLOCKER, 'ib_lockout_count')) ? ', ib_lockout_count' : '';  //-v2.0.1a
+    $password_fields = $db->Execute("SELECT ib_password$lockout_field FROM " . TABLE_IP_BLOCKER . ' WHERE ib_id=1'); //-v2.0.1c
+    $ib_password = $password_fields->fields['ib_password'];  //-v2.0.1c
     
     if ($ib_password != '' && $password != $ib_password) {
       $message = 'Wrong password!';
+//-bof-v2.0.1a
+      if ($lockout_field != '' && $password_fields->fields['ib_lockout_count'] != 0) {
+        if (!isset($_SESSION['ib_lockout_count'])) {
+          $_SESSION['ib_lockout_count'] = 1;
+          
+        } else {
+          $_SESSION['ib_lockout_count']++;
+          
+        }
+        if ($_SESSION['ib_lockout_count'] >= $password_fields->fields['ib_lockout_count']) {
+          $_SESSION['ip_blocker_fail'] = 1;
+          exit();
+        }
+      }
+//-eof-v2.0.1a
       
     } elseif ($ib_password != '' && $password == $ib_password) {
       $_SESSION['ip_blocker_pass'] = true;
@@ -48,7 +66,7 @@ body{font-size:14px;font-family:Verdana, Arial, Helvetica, sans-serif;}
 
 <body>
 <div class="d_w">
-  <div class="d_t">Login to continue ...</div>
+  <div class="d_t">Login to continue ...<?php echo print_r(array($lockout_field, $ib_password->fields), true); ?></div>
   <form action="" name="i_l" method="POST" target="_self">
     <div class="d_p">Password:&nbsp;&nbsp;&nbsp;<input type="password" name="pwd" size="35" value="" />&nbsp;&nbsp;&nbsp;<input type="submit" value="Login" /></div>
 <?php

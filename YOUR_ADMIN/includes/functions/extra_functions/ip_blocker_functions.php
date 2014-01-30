@@ -32,6 +32,17 @@ if (function_exists('zen_register_admin_page')) {
   }    
 }
 
+// -----
+// If the IP blocker was previously installed, but the login lockout count field doesn't exist,
+// add it.
+//
+//-bof-v2.0.1a
+if ($sniffer->table_exists(TABLE_IP_BLOCKER) && !$sniffer->field_exists(TABLE_IP_BLOCKER, 'ib_lockout_count')) {
+  $db->Execute("ALTER TABLE " . TABLE_IP_BLOCKER . " ADD ib_lockout_count int(5) NOT NULL default '0'");
+  
+}
+//-eof-v2.0.1a
+
 /**
  * Ip blocker install check
  * 

@@ -44,7 +44,8 @@ define('IB_FEATURE_ENABLED', 'You have successfully enabled the IP Blocker!');
 define('IB_FEATURE_DISABLED', 'You have successfully disabled the IP Blocker!');
 define('IB_ON', 'On');
 define('IB_OFF', 'Off');
-define('IP_BLOCKER_HELP_POWER', 'Use this page to set the IP Blocker "On" or "Off".');
+define('IP_BLOCKER_HELP_POWER', 'Use this page to set the IP Blocker "On" or "Off" and to set the login lockout count.  The <em>Login Lockout Count</em> is the number of unsuccessful login attempts from the &quot;Special&quot; login page before the page stops taking input and simply presents a white-screen.  A value of 0 in the count results in unlimited attempts allowed.');  //-v2.0.1c
+define('IP_BLOCKER_LOCKOUT_COUNT', 'Login lockout count:');  //-v2.0.1a
 
 define('IB_INSTALL_OK', 'IP Blocker was successfully installed. The default password is <span style="color:blue;">123456</span>.');
 define('IB_MESSAGE_IP_UPDATED_SUCCESS', 'The IP Address lists were successfully updated.');

@@ -19,7 +19,7 @@
 // +----------------------------------------------------------------------+
 // $Id: ip_blocker.php, v1.0.0 2009/09/09 $d <noblesenior@gmail.com> $
 //
-define('IP_BLOCKER_TITLE', 'IP Blocker (v2.0.0)');
+define('IP_BLOCKER_TITLE', 'IP Blocker (v2.0.1)');
 define('IP_BLOCKER_MENU_IP_SETTINGS', 'IP Settings');
 define('IP_BLOCKER_MENU_PASSWORD_SETTINGS', 'Password Settings');
 define('IP_BLOCKER_MENU_POWER', 'Enable');

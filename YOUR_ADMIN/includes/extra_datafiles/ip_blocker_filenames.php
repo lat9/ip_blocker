@@ -20,4 +20,4 @@
 // @author $d <noblesenior@gmail.com>
 // $Id: ip_blocker_filenames.php, v1.0.0.0 2009/09/09 langer $
 //
-define('FILENAME_IP_BLOCKER', 'ip_blocker.php');
+define('FILENAME_IP_BLOCKER', 'ip_blocker');

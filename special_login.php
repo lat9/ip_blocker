@@ -2,7 +2,8 @@
 require_once('includes/application_top.php');
 
 if (isset($_SESSION['ip_blocker_pass']) && $_SESSION['ip_blocker_pass'] == TRUE) {
-  header('Location: ./index.php');
+  zen_redirect (zen_href_link (FILENAME_DEFAULT));  //-v2.0.2c
+  
 }
 
 if (isset($_SESSION['ip_blocker_fail'])) exit();  //-v2.0.1a
@@ -43,7 +44,8 @@ if (isset($_POST) && isset($_POST['pwd'])) {
       
     } elseif ($ib_password != '' && $password == $ib_password) {
       $_SESSION['ip_blocker_pass'] = true;
-      header('Location: ./index.php');
+      unset ($_SESSION['ib_lockout_count']);  //-v2.0.2a
+      zen_redirect (zen_href_link (FILENAME_DEFAULT));  //-v2.0.2c-Use built in zen functions
       
     }
   }
@@ -66,7 +68,7 @@ body{font-size:14px;font-family:Verdana, Arial, Helvetica, sans-serif;}
 
 <body>
 <div class="d_w">
-  <div class="d_t">Login to continue ...<?php echo print_r(array($lockout_field, $ib_password->fields), true); ?></div>
+  <div class="d_t">Login to continue ...</div>
   <form action="" name="i_l" method="POST" target="_self">
     <div class="d_p">Password:&nbsp;&nbsp;&nbsp;<input type="password" name="pwd" size="35" value="" />&nbsp;&nbsp;&nbsp;<input type="submit" value="Login" /></div>
 <?php

@@ -22,95 +22,102 @@
 // Modifications for Zen Cart v1.5.0+ by lat9, Copyright 2014, Vinos de Frutas Tropicales
 // ------------------------------
 
-// -----
-// If the installation supports admin-page registration (i.e. v1.5.0 and later), then
-// register the IP Blocker tool into the admin menu structure.
-//
-if (function_exists('zen_register_admin_page')) {
-  if (!zen_page_key_exists('toolsIPblocker')) {
-    zen_register_admin_page('toolsIPblocker', 'BOX_TOOLS_IP_BLOCKER', 'FILENAME_IP_BLOCKER', '', 'tools', 'Y', 20);
-  }    
-}
 
 // -----
-// If the IP blocker was previously installed, but the login lockout count field doesn't exist,
-// add it.
+// Convert the IP Blocker's "visual" form of the IP list to the serialized version that's used to compare
+// a store-side IP address for the block/pass lists.  Will not update the database if an invalid ipV4 IP
+// address is discovered.
 //
-//-bof-v2.0.1a
-if ($sniffer->table_exists(TABLE_IP_BLOCKER) && !$sniffer->field_exists(TABLE_IP_BLOCKER, 'ib_lockout_count')) {
-  $db->Execute("ALTER TABLE " . TABLE_IP_BLOCKER . " ADD ib_lockout_count int(5) NOT NULL default '0'");
-  
-}
-//-eof-v2.0.1a
-
-/**
- * Ip blocker install check
- * 
- * @return boolean
- */
-function ip_blocker_installed(){
-  global $sniffer;
-  
-  return $sniffer->table_exists(TABLE_IP_BLOCKER);
-}
-
-/**
- * Save the ip list
- *
- * @param string $list    ip list
- * @param string $type    ip list type
- * @return void
- */
-function ip_blocker_ip_list($list, $type = 'block'){
+function ip_blocker_ip_list ($list, $type = 'block') {
   global $db;
   
-  $iplist = trim($list);
-  $column = 'ib_' . trim($type) . 'list';
+  $iplist = trim ($list);
+  $column = "ib_{$type}list";
   $column_string = $column . '_string';
-
+  $error_ip = '';
   if ($iplist == '') {
     // Clear ip list
-    $db->Execute('UPDATE `' . TABLE_IP_BLOCKER . '` SET ' . $column . '="",' . $column_string . '="",ib_date="' . date('Y-m-d') . '" WHERE ib_id=1');
-  }else {
+    $db->Execute('UPDATE ' . TABLE_IP_BLOCKER . " SET $column = '',  $column_string = '', ib_date = '" . date('Y-m-d') . "' WHERE ib_id=1");
+    
+  } else {
     $ip = array();
     $ip_rows = explode("\r\n", $iplist);
-    
-    if (! empty($ip_rows)) {
+    if (!empty ($ip_rows)) {
       foreach ($ip_rows as $ip_row){
-        // Search ip address
-        preg_match("/\b\d(.|\*|\s|\/)*/i", $ip_row, $match);
-        $ip_ = $match[0];
-        $ip_ = preg_replace("/\s/i", '', $ip_);
-        
-        if (strpos($ip_, '/') > 0) {
-          $ip_ = explode('/', $ip_);
-          $ip_start = $ip_[0];
-          $ip_end = $ip_[1];
-          $ip_pre = substr($ip_start, 0, strrpos($ip_start, '.'));
-          $ip_start = substr($ip_start, strrpos($ip_start, '.') + 1, strlen($ip_start));
+        if (!ip_blocker_validate_address ($ip_row, $ip_info)) {
+          $error_ip = $ip_row;
+          break;
+        }
+       
+        if (!isset ($ip_info['range'])) {
+          $ip[] = $ip_row;
           
-          foreach (range($ip_start, $ip_end) as $range){
-            $ip[] = $ip_pre . '.' . $range;
+        } else {
+          $ip_pre = $ip_info[0] . '.' . $ip_info[1] . '.' . $ip_info[2] . '.';
+          for ($range = $ip_info['range'][0]; $range <= $ip_info['range'][1]; $range++) {
+            $ip[] = "$ip_pre.$range";
+            
           }
-        }else {
-          $ip[] = $ip_;
+          
         }
       }
     }
-
-    $ip_list_string = @serialize($ip);
     
-    // Save
-    $db->Execute('UPDATE `' . TABLE_IP_BLOCKER . '` SET ' . $column . '="' . zen_db_input($ip_list_string) . '",' . $column_string . '="' . $iplist . '",ib_date="' . date('Y-m-d') . '" WHERE ib_id=1');
-  }
+    if ($error_ip == '') {
+      $ip_list_string = @zen_db_input (serialize($ip));
+      $db->Execute('UPDATE ' . TABLE_IP_BLOCKER . " SET $column = '$ip_list_string', $column_string = '$iplist', ib_date = '" . date('Y-m-d') . "' WHERE ib_id=1");
+    
+    }
+    
+  }  // IP list supplied is not empty
+  
+  return $error_ip;
+  
 }
 
-/**
- * Encrypt function
- *
- * @param string $password
- * @return string
- */
-function ip_blocker_md5($password){
-  return md5(md5($password . '_secure_key'));
+// -----
+// Validate a single IP-address specification.  Valid:
+//
+// - 192.16.1.255
+// - 192.168.1.*
+// - 192.168.2.3/6
+//
+// Invalid:
+// - 888.16.1.255
+// - 192.168.*
+// - 192.168.2.6/3
+//
+function ip_blocker_validate_address ($ip, &$ip_info) {
+  $is_valid = true;
+
+  $ip_info = explode ('.', $ip);
+  if (count ($ip_info) != 4) {
+    $is_valid = false;
+  } else {
+    for ($i = 0; $i < 4 && $is_valid; $i++) {
+      if (!(ctype_digit ($ip_info[$i]) && $ip_info[$i] >= 0 && $ip_info[$i] <= 255)) {
+        if ($i != 3) {
+          $is_valid = false;
+          
+        } else {
+          if ($ip_info[$i] != '*') {
+            $ip_info['range'] = explode ('/', $ip_info[$i]);
+            if (count ($ip_info['range']) != 2) {
+              $is_valid = false;
+            } else {
+              for ($j = 0; $j < 2 && $is_valid; $j++) {
+                if (!(ctype_digit ($ip_info['range'][$j]) && $ip_info['range'][$j] >= 0 && $ip_info['range'][$j] <= 255)) {
+                  $is_valid = false;
+                }
+              }
+              if ($ip_info['range'][0] >= $ip_info['range'][1]) {
+                $is_valid = false;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  return $is_valid;
 }

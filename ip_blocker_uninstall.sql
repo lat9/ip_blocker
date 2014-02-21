@@ -1,1 +1,1 @@
-DELETE FROM admin_pages WHERE page_key='toolsIPblocker';
+DELETE FROM admin_pages WHERE page_key='toolsIPblocker';DROP TABLE ip_blocker;

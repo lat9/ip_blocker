@@ -20,3 +20,6 @@
 // $Id: ip_blocker.php, v1.0.0.0 2009/09/09 langer $
 //
 define('BOX_TOOLS_IP_BLOCKER', 'IP Blocker');
+
+define ('ERROR_NOT_SINGLE_ADDRESS', 'The IP address (%s) is not a valid IPv4 address or address range.');
+define ('IP_BLOCKER_TEXT_BLOCK_IP', 'Block this IP');

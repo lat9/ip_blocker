@@ -35,7 +35,7 @@ define('IP_BLOCKER_HELP_PASSWORD_SETTINGS_DEFAULT', 'You are currently using the
 define('IB_PASSWORD_SET', 'Your IP blocker password has been changed from the default value.  If you don\'t remember the value, you can change it here.');
 
 define('IB_MESSAGE_PASSWORD_REQUIRED_ERROR', 'A password is required!');
-define('IB_MESSAGE_BAD_BLOCKED_IP_ERROR', 'An invalid IP address (%s) was found in your <em>Blocked IP Addresses</em>.');
-define('IB_MESSAGE_BAD_ALLOWED_IP_ERROR', 'An invalid IP address (%s) was found in your <em>Allowed IP Addresses</em>.');
+define('IB_MESSAGE_BAD_BLOCKED_IP_ERROR', 'An error was found in your <em>Blocked IP Addresses</em>: %s');
+define('IB_MESSAGE_BAD_ALLOWED_IP_ERROR', 'An error was found in your <em>Allowed IP Addresses</em>: %s');
 
 define('IB_MESSAGE_UPDATED', 'Your IP Blocker settings have been successfully updated.');

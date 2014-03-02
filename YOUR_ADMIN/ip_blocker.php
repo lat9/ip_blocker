@@ -44,12 +44,13 @@ if (isset ($_POST) && isset ($_GET['action']) && $_GET['action'] = 'process') {
     $pwd = ($_POST['pwd'] == $_POST['current_pwd']) ? $_POST['current_pwd'] : ip_blocker_md5 ($_POST['pwd']);
     
   }
+  
   $blocklist = zen_db_prepare_input ($_POST['blocklist']);
-  $message_blocklist = ip_blocker_ip_list ($blocklist, 'block');
+  $message_blocklist = ip_blocker_save_iplist ($blocklist, 'block');
   
   $passlist = zen_db_prepare_input ($_POST['passlist']);
-  $message_passlist = ip_blocker_ip_list ($passlist, 'pass');
-  
+  $message_passlist = ip_blocker_save_iplist ($passlist, 'pass');
+    
   if (($message_pwd . $message_blocklist . $message_passlist) == '') {
     $enabled = (int)$_POST['enable'];
     $lockout_count = (int)$_POST['lockout_count'];
@@ -65,8 +66,8 @@ if (isset ($_POST) && isset ($_GET['action']) && $_GET['action'] = 'process') {
   $enabled = (int)$ip_list->fields['ib_power'];
   $lockout_count = $ip_list->fields['ib_lockout_count'];
   $pwd = $ip_list->fields['ib_password'];
-  $blocklist = $ip_list->fields['ib_blocklist_string'];
-  $passlist = $ip_list->fields['ib_passlist_string'];
+  $blocklist = implode ("\r\n", ip_blocker_array_to_list (unserialize ($ip_list->fields['ib_blocklist'])));
+  $passlist = implode ("\r\n", ip_blocker_array_to_list (unserialize ($ip_list->fields['ib_passlist'])));
   
 }
 ?>

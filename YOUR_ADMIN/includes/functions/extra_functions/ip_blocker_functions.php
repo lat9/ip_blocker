@@ -41,7 +41,7 @@ function ip_blocker_is_enabled() {
 // Returns an empty string ('') on success or an error message identifying the invalid IP address otherwise.
 //
 function ip_blocker_save_iplist ($iplist, $type = 'block') {
-  global $db, $a1, $a2;
+  global $db;
 
   if ($iplist == '') {
     $error_ip = '';

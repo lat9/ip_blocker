@@ -22,7 +22,7 @@ pre { padding-left: 40px; }
 
 <body>
 <h1>IP Blocker for Zen Cart v1.5.0 (and later)</h1>
-<h3>Version 2.0.2 by lat9</h3>
+<h3>Version 2.1.0 by lat9</h3>
 <p>Current Support Thread at Zen Cart Forums: <a href="http://www.zen-cart.com/showthread.php?211251-IP-Blocker-1-5-1" target="_blank">http://www.zen-cart.com/showthread.php?211251-IP-Blocker-1-5-1</a></p>
 
 <h2>Version History:</h2>
@@ -55,7 +55,11 @@ pre { padding-left: 40px; }
       <li>/special_login.php</li>
       <li>/includes/init_includes/init_ip_blocker.php</li>
     </ol></li>
-  </ul></li>  
+  </ul></li>
+  <li>v2.1.0, 2014-03-02:<ul>
+    <li>Simplify the admin interface to a single page; installation is now performed via an init script.</li>
+    <li>Enable a single-click from the admin's whos_online page to add the selected IP address to the blocked list.</li>
+  </ul></li>
 </ul>
 
 <h2>What it does</h2>
@@ -64,21 +68,22 @@ pre { padding-left: 40px; }
   <li>Blocked IP Addresses. An IP address that falls in one of the ranges specified here is redirected to your store's <code>/special_login.php</code> script.  If the <em>IP Blocker</em> password is correctly entered on that login screen, that IP address is allowed access for that session's duration.</li>
   <li>Allowed IP Addresses. Use this IP address list to provide a list of exceptions to the blocked list above.  If an IP address falls into one of the ranges specified here, access is allowed to your store even though the address also falls into a blocked address range.</li>
 </ol>
-<h3>IP Settings</h3>
-<p>For each of the IP Address lists, you enter one address specification per line using one of the following formats:</p>
-<ol>
-  <li><em>Single-address Format</em>.  Enter the full IPv4-formatted address, e.g. 192.168.1.17.</li>
-  <li><em>Full-Octet Range Format</em>. Enter the upper octets for the IP address, then use the asterisk (*) to indicate that all lower octets are to be included.  For example, 192.168.1.* translates to the IP address range 192.168.1.0-192.168.1.255; 192.168.* translates to the range 192.168.0.0-192.168.255.255.</li>
-  <li><em>Sub-Octet Range Format</em>. Enter the upper octets for the IP address, then use the format <b>n/m</b> to specify the lowest octet range from <b>n</b> to <b>m</b>.  For example, 192.168.1.1/17 translates to the IP address range 192.168.1.1-192.168.1.17.</li>
-</ol>
-<p><strong>Note:</strong> It is <em>your</em> responsibility to ensure that there are no overlaps in each of the IP address ranges.  Overlaps don't harm anything, but can lead to &quot;bloat&quot; in the IP Blocker's database table!</p>
-<h3>Password</h3>
-<p>Use this screen within the IP Blocker tool to enter the password (the default value is <b>123456</b>) that will be accepted by the <code>special_login.php</code> script, allowing an otherwise blocked IP address to access your store.</p>
-<h3>Enable</h3>
-<p>Use this screen within the IP Blocker tool to enable (default) the IP blocker or disable its operation while maintaining your current settings.  The <em>Login Lockout Count</em> is the number of unsuccessful login attempts from the &quot;Special&quot; login page before the page stops taking input and simply presents a white-screen.  A value of 0 in the count results in unlimited attempts allowed.</p>
+<p>The tool allows you to specify:</p>
+<ul>
+  <li><b>Enable IP Blocker?</b> &mdash; Identify whether (Yes) or not (No) you want the IP Blocker to block certain IP addresses from accessing your Zen Cart store.</li>
+  <li><b>Login lockout count</b> &mdash; Identify the number of invalid passwords that the IP Blocker will accept from a given IP address before it simply whitescreens.  A value of 0 (the default) allows an infinite number of invalid passwords.</li>
+  <li><b>Password</b> &mdash; Enter the password (the default value is <em>123456</em>) that will be accepted by the <code>special_login.php</code> script, allowing an otherwise blocked IP address to access your store.</li>
+  <li><b>Blocked IP Addresses</b> and <b>Allowed IP Addresses</b> &mdash; For each of the IP Address lists, you enter one address specification per line using one of the following formats:<ol>
+    <li><em>Single-address Format</em>.  Enter the full IPv4-formatted address, e.g. 192.168.1.17.</li>
+    <li><em>Full-Octet Range Format</em>. Enter the upper octets for the IP address, then use the asterisk (*) to indicate that all lower octets are to be included.  For example, 192.168.1.* translates to the IP address range 192.168.1.0-192.168.1.255; 192.168.* translates to the range 192.168.0.0-192.168.255.255.</li>
+    <li><em>Sub-Octet Range Format</em>. Enter the upper octets for the IP address, then use the format <b>n/m</b> to specify the lowest octet range from <b>n</b> to <b>m</b>.  For example, 192.168.1.1/17 translates to the IP address range 192.168.1.1-192.168.1.17.</li>
+  </ol>The tool will consolidate your IP address specifications, e.g. 192.168.1.0/255 will be stored as <em>192.168.1.*</em>.</li>
+</ul>
+<p>A modification is also provided to your admin's <em>Tools-&gt;Who's Online</em>, presenting a link entitled <strong>Block this IP</strong> next to each IP address if the IP Blocker is enabled.  Clicking that link will result in the associated IP address being added to the <em>Blocked IP Addresses</em> list.</p>
+<p><strong>Note:</strong> Starting with v2.1.0, the tool stores only the IP address format used by the store-side processing to conserve database space.  The displayed version of the blocked and allowed address lists are computed for the admin-console display.</p>
 
 <h2>Installation</h2>
-<p>There are no core-file overwrites in this plugin, but you should <strong>always</strong> backup your cart's database and files prior to making any changes. Once you have unzipped the plugin's distribution file:</p>
+<p>There are <span class="corefile">core-file overwrites</span> in this plugin; you should <strong>always</strong> backup your cart's database and files prior to making any changes. Once you have unzipped the plugin's distribution file:</p>
 <ol>
   <li>Rename the /YOUR_ADMIN directory to match your Zen Cart admin directory's name.
   <li>Copy the plugin's files to your Zen Cart's file system:<ol>
@@ -87,19 +92,20 @@ pre { padding-left: 40px; }
     <li>/includes/extra_datafiles/ip_blocker_database_tables.php</li>
     <li>/includes/init_includes/init_ip_blocker.php</li>
     <li>/YOUR_ADMIN/ip_blocker.php</li>
+    <li><span class="corefile">/YOUR_ADMIN/whos_online.php</span></li>
+    <li>/YOUR_ADMIN/includes/auto_loaders/config.ip_blocker_admin.php</li>
     <li>/YOUR_ADMIN/includes/extra_datafiles/ip_blocker_database_tables.php</li>
     <li>/YOUR_ADMIN/includes/extra_datafiles/ip_blocker_filenames.php</li>
     <li>/YOUR_ADMIN/includes/functions/extra_functions/ip_blocker_functions.php</li>
+    <li>/YOUR_ADMIN/includes/init_includes/init_ip_blocker.php</li>
     <li>/YOUR_ADMIN/includes/languages/english/ip_blocker.php</li>
     <li>/YOUR_ADMIN/includes/languates/english/extra_definitions/ip_blocker.php</li>
   </ol></li>
-  <li>Log into your Zen Cart admin and click <em>Tools-&gt;IP Blocker</em>. Follow the instructions given by that tool to complete the installation.</li>
 </ol>
 
 <h2>Removing the IP Blocker</h2>
 <p>To remove the IP Blocker tool from your Zen Cart:</p>
 <ol>
-  <li>Click the <em>Uninstall</em> link on the <em>Tools-&gt;IP Blocker</em> tool to remove its database table.</li>
   <li>Delete the files that you copied during the plugin's installation.</li>
   <li>Run the /ip_blocker_uninstall.sql using your Zen Cart's <em>Tools->Install SQL Patches</em>.</li>
 </ol>

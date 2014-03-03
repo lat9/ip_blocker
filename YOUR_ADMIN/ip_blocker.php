@@ -66,8 +66,10 @@ if (isset ($_POST) && isset ($_GET['action']) && $_GET['action'] = 'process') {
   $enabled = (int)$ip_list->fields['ib_power'];
   $lockout_count = $ip_list->fields['ib_lockout_count'];
   $pwd = $ip_list->fields['ib_password'];
-  $blocklist = implode ("\r\n", ip_blocker_array_to_list (unserialize ($ip_list->fields['ib_blocklist'])));
-  $passlist = implode ("\r\n", ip_blocker_array_to_list (unserialize ($ip_list->fields['ib_passlist'])));
+  $blocklist = ip_blocker_array_to_list (unserialize ($ip_list->fields['ib_blocklist']));
+  $blocklist = (is_array ($blocklist)) ? implode ("\r\n", $blocklist) : '';
+  $passlist = ip_blocker_array_to_list (unserialize ($ip_list->fields['ib_passlist']));
+  $passlist = (is_array ($passlist) ? implode ("\r\n", $passlist) : '';
   
 }
 ?>

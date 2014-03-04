@@ -69,7 +69,7 @@ if (isset ($_POST) && isset ($_GET['action']) && $_GET['action'] = 'process') {
   $blocklist = ip_blocker_array_to_list (unserialize ($ip_list->fields['ib_blocklist']));
   $blocklist = (is_array ($blocklist)) ? implode ("\r\n", $blocklist) : '';
   $passlist = ip_blocker_array_to_list (unserialize ($ip_list->fields['ib_passlist']));
-  $passlist = (is_array ($passlist) ? implode ("\r\n", $passlist) : '';
+  $passlist = (is_array ($passlist)) ? implode ("\r\n", $passlist) : '';
   
 }
 ?>

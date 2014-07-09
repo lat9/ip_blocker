@@ -62,6 +62,7 @@ pre { padding-left: 40px; }
   </ul></li>
   <li>v2.1.1, 2014-07-09:<ul>
     <li>BUGFIX: PHP warnings generated.</li>
+    <li>BUGFIX: Readme incorrectly indicates "192.168.* translates to the range 192.168.0.0-192.168.255.255"; remove this text.</li>
     <li>Changed:<ol>
       <li>/YOUR_ADMIN/ip_blocker.php</li>
     </ol></li>
@@ -81,7 +82,7 @@ pre { padding-left: 40px; }
   <li><b>Password</b> &mdash; Enter the password (the default value is <em>123456</em>) that will be accepted by the <code>special_login.php</code> script, allowing an otherwise blocked IP address to access your store.</li>
   <li><b>Blocked IP Addresses</b> and <b>Allowed IP Addresses</b> &mdash; For each of the IP Address lists, you enter one address specification per line using one of the following formats:<ol>
     <li><em>Single-address Format</em>.  Enter the full IPv4-formatted address, e.g. 192.168.1.17.</li>
-    <li><em>Full-Octet Range Format</em>. Enter the upper octets for the IP address, then use the asterisk (*) to indicate that all lower octets are to be included.  For example, 192.168.1.* translates to the IP address range 192.168.1.0-192.168.1.255; 192.168.* translates to the range 192.168.0.0-192.168.255.255.</li>
+    <li><em>Full-Octet Range Format</em>. Enter the upper octets for the IP address, then use the asterisk (*) to indicate that all lower octets are to be included.  For example, 192.168.1.* translates to the IP address range 192.168.1.0-192.168.1.255.</li>
     <li><em>Sub-Octet Range Format</em>. Enter the upper octets for the IP address, then use the format <b>n/m</b> to specify the lowest octet range from <b>n</b> to <b>m</b>.  For example, 192.168.1.1/17 translates to the IP address range 192.168.1.1-192.168.1.17.</li>
   </ol>The tool will consolidate your IP address specifications, e.g. 192.168.1.0/255 will be stored as <em>192.168.1.*</em>.</li>
 </ul>

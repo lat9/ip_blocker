@@ -1,10 +1,10 @@
 <?php
 /**
  * @package admin
- * @copyright Copyright 2003-2011 Zen Cart Development Team
+ * @copyright Copyright 2003-2014 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: whos_online.php 18695 2011-05-04 05:24:19Z drbyte $
+ * @version GIT: $Id: Author: DrByte  Modified in v1.5.4 $
  */
 
 // Default refresh interval (0=off).  NOTE: Using automated refresh may put you in breach of PCI Compliance
@@ -213,7 +213,7 @@ function zen_check_minutes($the_time_last_click) {
   // -->
 </script>
 <style>
-<!-- inline CSS Styles
+<!-- /* inline CSS Styles */
 .whos-online td {
   color:#444;
   font-family:Helvetica, Arial, sans-serif;
@@ -398,7 +398,7 @@ function zen_check_minutes($the_time_last_click) {
     $ip_blocker_link = ' &mdash; <a href="' . zen_href_link (FILENAME_WHOS_ONLINE, zen_get_all_get_params (array ('info', 'action')) . 'action=block&ip=' . $whos_online->fields['ip_address']) . '">' . IP_BLOCKER_TEXT_BLOCK_IP . '</a>';
   }
 ?>
-                <td class="dataTableContentWhois" align="left" valign="top"><a href="http://whois.domaintools.com/<?php echo $whos_online->fields['ip_address']; ?>" target="_blank"><?php echo $whos_online->fields['ip_address'] . $ip_blocker_link; ?></a></td>
+                <td class="dataTableContentWhois" align="left" valign="top"><a href="http://whois.domaintools.com/<?php echo $whos_online->fields['ip_address']; ?>" target="_blank"><?php echo '<u>' . $whos_online->fields['ip_address'] . '</u>' . $ip_blocker_link; ?></a></td>
                 <td>&nbsp;</td>
 <?php
 //-eof-ip_blocker-2/2

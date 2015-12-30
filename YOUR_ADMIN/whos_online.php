@@ -70,7 +70,7 @@ function zen_check_minutes($the_time_last_click) {
   require(DIR_WS_CLASSES . 'currencies.php');
   $currencies = new currencies();
   
-//-bof-ip_blocker-1/2
+//-bof-ip_blocker-lat9  *** 1 of 3 ***
   if (isset ($_GET['action']) && $_GET['action'] == 'block') {
     $ipb_process = 'start';
     if (function_exists ('ip_blocker_insert_block_address')) {
@@ -79,7 +79,7 @@ function zen_check_minutes($the_time_last_click) {
     zen_redirect (zen_href_link (FILENAME_WHOS_ONLINE, zen_get_all_get_params (array ('action', 'ip'))));
     
   }
-//-eof-ip_blocker-1/2
+//-eof-ip_blocker-lat9  *** 1 of 3 ***
 
   // same time_entry as time_last_click for 600 seconds = 10 minutes assumed to have left immediately
   $xx_mins_ago_dead = (time() - WHOIS_TIMER_DEAD);
@@ -171,6 +171,28 @@ function zen_check_minutes($the_time_last_click) {
   $sql = $db->bindVars($sql, ':where:', $where, 'passthru');
   $sql = $db->bindVars($sql, ':orderby:', $order, 'passthru');
   $whos_online = $db->Execute($sql);
+  // catch the case where we have an invalid session key, and if so default it to first entry
+  $found_entry = false;
+  $candidate_info = '';
+  while(!$whos_online->EOF) {
+    if (!isset($candidate_info)) $candidate_info = $whos_online->fields['session_id']; // get first entry in list
+    if (!$found_entry && isset($_GET['info']) && $_GET['info'] == $whos_online->fields['session_id']) {
+      $found_entry = true;
+      break;
+    }
+    $whos_online->MoveNext();
+  }
+  if (!$found_entry) $_GET['info'] = $candidate_info;
+// rewind query
+//-bof-ip_blocker-lat9  *** 2 of 3 ***
+  if (method_exists ($whos_online, 'rewind')) {
+    $whos_online->rewind();
+  } else {
+    $whos_online->Move (0);
+    $whos_online->MoveNext ();
+  }
+//-eof-ip_blocker-lat9  *** 2 of 3 ***
+
   $total_sess = $whos_online->RecordCount();
 
   $optURL = FILENAME_WHOS_ONLINE . '.php?' . zen_get_all_get_params(array('t', 'na', 'ns'));
@@ -278,7 +300,10 @@ function zen_check_minutes($the_time_last_click) {
                 <a class="optionClick<?php echo ($_SESSION['wo_timeout']=='5') ? ' chosen' : ''; ?>" href="<?php echo $optURL;?>t=5"><?php echo TEXT_WHOS_ONLINE_TIMER_FREQ1; ?></a>&nbsp;
                 <a class="optionClick<?php echo ($_SESSION['wo_timeout']=='15') ? ' chosen' : ''; ?>" href="<?php echo $optURL;?>t=15"><?php echo TEXT_WHOS_ONLINE_TIMER_FREQ2; ?></a>&nbsp;
                 <a class="optionClick<?php echo ($_SESSION['wo_timeout']=='30') ? ' chosen' : ''; ?>" href="<?php echo $optURL;?>t=30"><?php echo TEXT_WHOS_ONLINE_TIMER_FREQ3; ?></a>&nbsp;
-                <a class="optionClick<?php echo ($_SESSION['wo_timeout']=='60') ? ' chosen' : ''; ?>" href="<?php echo $optURL;?>t=60"><?php echo TEXT_WHOS_ONLINE_TIMER_FREQ4; ?></a>&nbsp;<br />
+                <a class="optionClick<?php echo ($_SESSION['wo_timeout']=='60') ? ' chosen' : ''; ?>" href="<?php echo $optURL;?>t=60"><?php echo TEXT_WHOS_ONLINE_TIMER_FREQ4; ?></a>&nbsp;
+                <a class="optionClick<?php echo ($_SESSION['wo_timeout']=='300') ? ' chosen' : ''; ?>" href="<?php echo $optURL;?>t=300"><?php echo TEXT_WHOS_ONLINE_TIMER_FREQ5; ?></a>&nbsp;
+                <a class="optionClick<?php echo ($_SESSION['wo_timeout']=='600') ? ' chosen' : ''; ?>" href="<?php echo $optURL;?>t=600"><?php echo TEXT_WHOS_ONLINE_TIMER_FREQ6; ?></a>&nbsp;
+                <a class="optionClick<?php echo ($_SESSION['wo_timeout']=='840') ? ' chosen' : ''; ?>" href="<?php echo $optURL;?>t=840"><?php echo TEXT_WHOS_ONLINE_TIMER_FREQ7; ?></a>&nbsp;<br />
 
                 <?php echo TEXT_WHOS_ONLINE_FILTER_SPIDERS; ?>
                 <a class="optionClick<?php echo ($_SESSION['wo_exclude_spiders'])  ? ' chosen' : ''; ?>" href="<?php echo $optURL;?>ns=1"><?php echo TEXT_YES; ?></a>&nbsp;
@@ -343,7 +368,7 @@ function zen_check_minutes($the_time_last_click) {
   $d=0;
   while (!$whos_online->EOF) {
     $time_online = (time() - $whos_online->fields['time_entry']);
-    if ( ((!$_GET['info']) || (@$_GET['info'] == $whos_online->fields['session_id'])) && (!$info) ) {
+    if ( (!$_GET['info'] || $_GET['info'] == $whos_online->fields['session_id']) && !$info) {
       $info = $whos_online->fields['session_id'];
       $ip_address = $whos_online->fields['ip_address'];
       $full_name = $whos_online->fields['full_name'];
@@ -392,7 +417,7 @@ function zen_check_minutes($the_time_last_click) {
                   ?>
                 </td>
 <?php
-//-bof-ip_blocker-2/2
+//-bof-ip_blocker-lat9  *** 3 of 3 ***
   $ip_blocker_link = '';
   if (function_exists ('ip_blocker_is_enabled') && ip_blocker_is_enabled ()) {
     $ip_blocker_link = ' &mdash; <a href="' . zen_href_link (FILENAME_WHOS_ONLINE, zen_get_all_get_params (array ('info', 'action')) . 'action=block&ip=' . $whos_online->fields['ip_address']) . '">' . IP_BLOCKER_TEXT_BLOCK_IP . '</a>';
@@ -401,7 +426,7 @@ function zen_check_minutes($the_time_last_click) {
                 <td class="dataTableContentWhois" align="left" valign="top"><a href="http://whois.domaintools.com/<?php echo $whos_online->fields['ip_address']; ?>" target="_blank"><?php echo '<u>' . $whos_online->fields['ip_address'] . '</u>' . $ip_blocker_link; ?></a></td>
                 <td>&nbsp;</td>
 <?php
-//-eof-ip_blocker-2/2
+//-eof-ip_blocker-lat9  *** 3 of 3 ***
 ?>
                 <td class="dataTableContentWhois" align="center" valign="top"><?php echo date('H:i:s', $whos_online->fields['time_entry']); ?></td>
                 <td class="dataTableContentWhois" align="center" valign="top"><?php echo date('H:i:s', $whos_online->fields['time_last_click']); ?></td>

@@ -19,23 +19,20 @@
 // +----------------------------------------------------------------------+
 // $Id: ip_blocker.php, v1.0.0 2009/09/09 $d <noblesenior@gmail.com> $
 //
-define('IP_BLOCKER_TITLE', 'IP Blocker (v2.1.0)');
+define('HEADING_TITLE', 'IP Blocker (v2.1.4)');
+define('IB_TEXT_INSTRUCTIONS', '<p>The IP Blocker prevents access to the catalog-side of the shop from the IP addresses defined below.<br>Blocked IP addresses are redirected to a special login/password page which may be used to bypass the block.</p><p>For testing purposes, note that an IP address will not be blocked if a session has already been initiated from that IP address. To test, delete the zenid cookie from the browser.</p>');
+define('IB_TEXT_ENABLE', 'Enable IP Blocker?');
 
-define('IP_BLOCKER_ENABLE', 'Enable IP Blocker?');
-define('IB_TEXT_PASSWORD', 'Password:');
-define('IB_BLOCKED_RANGE', 'Blocked IP Addresses:');
-define('IB_ALLOWED_RANGE', 'Allowed IP Addresses:');
-define('IB_ON', 'Yes');
-define('IB_OFF', 'No');
-define('IP_BLOCKER_LOCKOUT_COUNT', 'Login lockout count:');  //-v2.0.1a
+define('IB_TEXT_SPECIAL_LOGIN_PASSWORD', 'Special Login Page Password');
 
-define('IP_BLOCKER_INSTRUCTIONS', 'Use this page to configure the <em>IP Blocker</em>.  You can<ul><li>Enable or Disable the IP Blocker\'s operation.</li><li>Set the login lockout count.  The <em>Login Lockout Count</em> is the number of unsuccessful login attempts from the &quot;Special&quot; login page before the page stops taking input and simply presents a white-screen.  A value of 0 in the count results in unlimited attempts allowed.</li><li>Set the IP addresses (or address ranges) that should be blocked from your store.  If an address is present in a blocked-range and is not present in an allowed-range, then the access attempt to your store will be blocked.<br /><br />Enter the IP addresses (or address ranges), one per line. Address ranges can be specified using an asterisk to identify all values in that segment, e.g. <code>192.168.1.*</code>, or you can identify a specific range, e.g. <code>192.168.1.1/17</code>.</li>');
+define('IB_TEXT_SPECIAL_LOGIN_COUNT', 'Special Login Page Count');  //-v2.0.1a
+define('IB_TEXT_SPECIAL_LOGIN_COUNT_INFO', '<p>The <em>Special Login count</em> is the number of unsuccessful login attempts allowed from the &quot;Special Login&quot; page before the page stops taking input and simply presents a white-screen.  A value of 0 in the count permits unlimited attempts.</p>');
 
-define('IP_BLOCKER_HELP_PASSWORD_SETTINGS_DEFAULT', 'You are currently using the default password (<b>123456</b>); you should change the password before you enable the IP blocker!');
-define('IB_PASSWORD_SET', 'Your IP blocker password has been changed from the default value.  If you don\'t remember the value, you can change it here.');
+define('IB_TEXT_BLOCKED_RANGE', 'Blocked IP Addresses:');
+define('IB_TEXT_ALLOWED_RANGE', 'Allowed IP Addresses:');
 
-define('IB_MESSAGE_PASSWORD_REQUIRED_ERROR', 'A password is required!');
-define('IB_MESSAGE_BAD_BLOCKED_IP_ERROR', 'An error was found in your <em>Blocked IP Addresses</em>: %s');
-define('IB_MESSAGE_BAD_ALLOWED_IP_ERROR', 'An error was found in your <em>Allowed IP Addresses</em>: %s');
+define('IB_TEXT_IP_ADDRESS', 'IP Addresses');
+define('IB_TEXT_IP_ADDRESS_INFO', '<p>Enter a single IP address or a range of IP addresses on a single line.<br>Address ranges can be specified using an asterisk to identify all values in that segment, e.g. <code>192.168.1.*</code>, or you can define a more specific range, e.g. <code>192.168.1.1/17</code>.</p>');
 
-define('IB_MESSAGE_UPDATED', 'Your IP Blocker settings have been successfully updated.');
+define('IB_ERROR_MESSAGE_BAD_IP', 'Invalid IP Address: %s');
+define('IB_MESSAGE_UPDATED', 'The IP Blocker settings have been updated.');

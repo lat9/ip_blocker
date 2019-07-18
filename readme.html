@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>IP Blocker for Zen Cart v1.5.0 to v1.5.6</title>
+<title>IP Blocker for Zen Cart v1.5.6 and later</title>
 
 <style>
 <!--
@@ -21,9 +21,9 @@ pre { padding-left: 40px; }
 </head>
 
 <body>
-<h1>IP Blocker for Zen Cart v1.5.0 through v1.5.6</h1>
+<h1>IP Blocker for Zen Cart v1.5.6 and later</h1>
 <h3>Version 2.1.4</h3>
-<p>Current Support Thread at Zen Cart Forums: <a href="http://www.zen-cart.com/showthread.php?211251-IP-Blocker-1-5-1" target="_blank">http://www.zen-cart.com/showthread.php?211251-IP-Blocker-1-5-1</a></p>
+<p>Current Support Thread at Zen Cart Forums: <a href="https://www.zen-cart.com/showthread.php?211251-IP-Blocker-1-5-1" target="_blank">https://www.zen-cart.com/showthread.php?211251-IP-Blocker-1-5-1</a></p>
 
 <h2>What it does</h2>
 <p><strong>IP Blocker</strong> allows you to block accesses to your store, based on the IP address of the client browser.</p>
@@ -73,20 +73,25 @@ pre { padding-left: 40px; }
   <li>Delete the files that you copied during the plugin's installation.</li>
   <li>Run the /ip_blocker_uninstall.sql using your Zen Cart's <em>Tools->Install SQL Patches</em>.</li>
 </ol>
+
 <h2>Version History:</h2>
 <ul>
   <li>v2.1.4, 2019-07-17 torvista
     <ul>
-      <li>CHANGE: Use Zen Cart v1.5.6c version for core-file change basis.  Changed:
-        <ol>
-          <li><span class="corefile">/YOUR_ADMIN/whos_online.php</span></li>
-        </ol>
-        </li>
-        <li>multiple changes to Admin page format: html5, simplify html code, use zencart functions, correct html validation and php strict reporting errors.</li>
-        <li>Changes to language texts.</li>
-        <li>BUGFIX: link to special_login.php was to server root instead of shop root. This would fail where a shop was in a subdirectory.</li>
-        <li>CHANGE: removed Admin page password check, default password and warning. Having the field required and no default password set forces a new password to be entered.</li>
-                </ul>
+      <li>CHANGE: Use Zen Cart v1.5.6c version for core-file change basis.</li>
+      <li>BUGFIX: Redirect to the special-login page didn't account for sites installed in a hosted sub-directory.</li>
+      <li>BUGFIX: MySQL error thrown on initial installation for more strict version of MySQL.</li>
+      <li>CHANGE: Restructure admin, using zc156/HTML5 as the basic.</li>
+      <li>The following files were changed:<ol>
+        <li>/special_login.php</li>
+        <li>/includes/init_includes/init_ip_blocker.php</li>
+        <li>/YOUR_ADMIN/ip_blocker.php</li>
+        <li><span class="corefile">/YOUR_ADMIN/whos_online.php</span></li>
+        <li>/YOUR_ADMIN/includes/init_includes/init_ip_blocker.php</li>
+        <li>/YOUR_ADMIN/includes/languages/english/extra_definitions/ip_blocker.php</li>
+        <li>/YOUR_ADMIN/includes/languages/english/ip_blocker.php</li>
+      </ol></li>
+    </ul>
   </li>
 
   <li>v2.1.3, 2015-12-30:
@@ -173,7 +178,5 @@ pre { padding-left: 40px; }
   
   <li>v1.0.0, 2009-09-10, Initial release by $d (noblesenior@gmail.com).</li>
 </ul>
-<h2>What it does</h2>
-<p>&nbsp;</p>
 </body>
 </html>

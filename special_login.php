@@ -28,7 +28,7 @@ if (isset($_POST['pwd'])) {
         $password_fields = $db->Execute("SELECT * FROM " . TABLE_IP_BLOCKER . ' WHERE ib_id=1');
         $ib_password = $password_fields->fields['ib_password'];
 
-        if ($ib_password != '' && $password != $ib_password) {
+        if ($ib_password == '' || $password != $ib_password) {
             $message = 'Wrong password!';
 
             if ($password_fields->fields['ib_lockout_count'] != 0) {

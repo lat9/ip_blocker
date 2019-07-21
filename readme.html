@@ -36,7 +36,8 @@ pre { padding-left: 40px; }
 <ul>
   <li><b>Enable IP Blocker?</b> &mdash; Identify whether (Yes) or not (No) you want the IP Blocker to block certain IP addresses from accessing your Zen Cart store.</li>
   <li><b>Special Login Page count</b> &mdash; Identify the number of invalid passwords that the IP Blocker will accept from a given IP address before it simply whitescreens.  A value of 0 (the default) allows an infinite number of invalid passwords.</li>
-  <li><b>Special Login Page Password</b> &mdash; Enter/change the password that will be accepted by the <code>special_login.php</code> script, allowing an otherwise blocked IP address to access your store.</li>
+  <li><b>Special Login Page Password</b> &mdash; Enter/change the password that will be accepted by the <code>special_login.php</code> script, allowing an otherwise blocked IP address to access your store. If the value entered is blank (initial installation default), then it is not possible to exit that page once entered.</li>
+  <li><b>Automatically block invalid IP addresses?</b> &mdash; Identify whether (Yes) or not (No) invalid IPv4 and IPv6 addresses should be automatically blocked.  Added in v2.2.0.</li>
   <li><b>Blocked IP Addresses</b> and <b>Allowed IP Addresses</b> &mdash; For each of the IP Address lists, you enter one address specification per line using one of the following formats:<ol>
     <li><em>Single-address Format</em>.  Enter the full IPv4-formatted address, e.g. 192.168.1.17.</li>
     <li><em>Full-Octet Range Format</em>. Enter the upper octets for the IP address, then use the asterisk (*) to indicate that all lower octets are to be included.  For example, 192.168.1.* translates to the IP address range 192.168.1.0-192.168.1.255.</li>
@@ -86,6 +87,8 @@ pre { padding-left: 40px; }
       <li>CHANGE: Use the storefront <code>zen_get_ip_address</code> to filter the IP address prior to checking.</li>
       <li>BUGFIX: Ensure that values retrieved from the database don't cause PHP issues.</li>
       <li>CHANGE: Move <code>special_login</code> lead-in text to a constant for easier updating.</li>
+      <li>CHANGE: Add a setting to allow invalid IPv4/IPv6 addresses to be automatically blocked.</li>
+      <li>CHANGE: No longer possible to exit the <code>special_login</code> if a password is not configured.</li>
       <li>The following files were changed:<ol>
         <li>/special_login.php</li>
         <li>/includes/extra_datafiles/ip_blocker_database_tables.php</li>

@@ -41,20 +41,16 @@ function ip_blocker_is_enabled()
 function ip_blocker_save_iplist($iplist, $type = 'block') 
 {
     global $db;
-
     if ($iplist == '') {
         $error_ip = '';
-        $empty_list = serialize (array ());
+        $empty_list = serialize(array());
         $db->Execute('UPDATE ' . TABLE_IP_BLOCKER . " SET ib_{$type}list = '$empty_list',  ib_{$type}list_string = '', ib_date = '" . date('Y-m-d') . "' WHERE ib_id=1");
-    
     } else {
-        $error_ip = ip_blocker_list_to_array ($iplist, $ip_db_array, false);
+        $error_ip = ip_blocker_list_to_array($iplist, $ip_db_array);
         if ($error_ip == '') {
-            $ip_db_list = @zen_db_input (serialize($ip_db_array));
+            $ip_db_list = serialize($ip_db_array);
             $db->Execute('UPDATE ' . TABLE_IP_BLOCKER . " SET ib_{$type}list = '$ip_db_list', ib_{$type}list_string = '', ib_date = '" . date('Y-m-d') . "' WHERE ib_id=1");
-    
         }
-    
     }
     return $error_ip;
 }
@@ -64,7 +60,7 @@ function ip_blocker_save_iplist($iplist, $type = 'block')
 // input and returning either an empty string ('') if all addresses passed the validation check or
 // an error message to be displayed identifying the invalid address.
 //
-function ip_blocker_list_to_array($iplist, & $ip_db_array, $single_address_only = false) 
+function ip_blocker_list_to_array($iplist, &$ip_db_array, $single_address_only = false) 
 {
     $ip_db_array = array();
     $ip_db_temp_array = array();
@@ -73,7 +69,7 @@ function ip_blocker_list_to_array($iplist, & $ip_db_array, $single_address_only 
     if (!empty($ip_entries)) {
         foreach ($ip_entries as $next_ip) {
             if (!ip_blocker_validate_address($next_ip, $ip_info, $single_address_only)) {
-                $error_ip = sprintf (ERROR_NOT_SINGLE_ADDRESS, $next_ip);
+                $error_ip = sprintf(ERROR_NOT_SINGLE_ADDRESS, $next_ip);
                 break;
             }
 
@@ -83,13 +79,12 @@ function ip_blocker_list_to_array($iplist, & $ip_db_array, $single_address_only 
                 $ip_upper = $ip_info[0] . '.' . $ip_info[1] . '.' . $ip_info[2];
                 for ($range = $ip_info['range'][0]; $range <= $ip_info['range'][1]; $range++) {
                     $ip_db_temp_array[] = "$ip_upper.$range";
-
                 }
             }
         }
 
         if ($error_ip == '') {
-            $ip_db_temp_array = array_unique ($ip_db_temp_array);     
+            $ip_db_temp_array = array_unique($ip_db_temp_array);     
             usort($ip_db_temp_array, 'ip_blocker_compare_address');
 
             foreach ($ip_db_temp_array as $next_ip) {
@@ -118,13 +113,13 @@ function ip_blocker_list_to_array($iplist, & $ip_db_array, $single_address_only 
                                 $ip_check_lower = $ip_lower;
 
                             } else {
-                                $ip_db_array = array_merge ($ip_db_array, $saved_ips);
+                                $ip_db_array = array_merge($ip_db_array, $saved_ips);
                                 $ip_db_array[] = $next_ip;
                                 unset($ip_check_upper_octets, $ip_check_lower, $saved_ips);
 
                             }
                         } else {
-                            $ip_db_array = array_merge ($ip_db_array, $saved_ips);
+                            $ip_db_array = array_merge($ip_db_array, $saved_ips);
                             if ($ip_lower == 0) {
                                 $saved_ips = array($next_ip);
                                 $ip_check_upper_octets = $ip_upper_octets;
@@ -140,17 +135,14 @@ function ip_blocker_list_to_array($iplist, & $ip_db_array, $single_address_only 
                         $saved_ips = array ($next_ip );
                         $ip_check_upper_octets = $ip_upper_octets;
                         $ip_check_lower = 0;
-
                     } else {
                         $ip_db_array[] = $next_ip;
-
                     }
                 }
             }
 
             if (isset($saved_ips)) {
-                $ip_db_array = array_merge ($ip_db_array, $saved_ips);
-
+                $ip_db_array = array_merge($ip_db_array, $saved_ips);
             }
         }
     }
@@ -164,16 +156,16 @@ function ip_blocker_insert_block_address($newaddress)
 {
     global $db;
     $error_ip = '';
-    if (!ip_blocker_validate_address ($newaddress, $ip_info, true)) {
+    if (!ip_blocker_validate_address($newaddress, $ip_info, true)) {
         $error_ip = sprintf(ERROR_NOT_SINGLE_ADDRESS, $newaddress);
     } else {
         $blocklist = $db->Execute("SELECT ib_blocklist FROM " . TABLE_IP_BLOCKER . " WHERE ib_id=1");
-        $blocked_ip_array = unserialize ($blocklist->fields['ib_blocklist']);
+        $blocked_ip_array = unserialize($blocklist->fields['ib_blocklist']);
 
         $is_new_address = false;
         if (!in_array($newaddress, $blocked_ip_array)) {
             $newaddress_all = substr($newaddress, 0, strrpos($newaddress, '.')) . '*';
-            if (!in_array ($newaddress_all, $blocked_ip_array)) {
+            if (!in_array($newaddress_all, $blocked_ip_array)) {
                 $blocked_ip_array[] = $newaddress;
                 $is_new_address = true;
             }
@@ -181,10 +173,9 @@ function ip_blocker_insert_block_address($newaddress)
 
         if ($is_new_address) {
             $blocked_ip_list = serialize($blocked_ip_array);
-            $db->Execute('UPDATE ' . TABLE_IP_BLOCKER . " SET ib_blocklist = '$blocked_ip_list', ib_blocklist_string = '', ib_date = '" . date('Y-m-d') . "' WHERE ib_id=1");
+            $db->Execute('UPDATE ' . TABLE_IP_BLOCKER . " SET ib_blocklist = '$blocked_ip_list', ib_date = '" . date('Y-m-d') . "' WHERE ib_id=1");
         }
     }
-
     return $error_ip;
 }
 
@@ -200,36 +191,72 @@ function ip_blocker_insert_block_address($newaddress)
 // - 192.168.*
 // - 192.168.2.6/3
 //
-function ip_blocker_validate_address ($ip, & $ip_info, $single_address_only = false) 
+// Returns:
+//
+// $is_valid, a boolean indicating whether/not the address is valid.
+//
+// Side effects:
+//
+// The $ip_info variable is updated with an array containing the IP quadrants and,
+// optionally, a 'range' element that contains the upper/lower values of any
+// range specification.
+//
+function ip_blocker_validate_address($ip, &$ip_info, $single_address_only = false) 
 {
     $is_valid = true;
 
+    $is_wildcard = (substr($ip, -1) == '*');
+    $is_range = (!$is_wildcard && strpos($ip, '/') !== false);
+    
+    $ip = (string)$ip;
     $ip_info = explode('.', $ip);
-    if (count ($ip_info) != 4) {
+    
+    // -----
+    // If the to-be-checked IP must be a single-address specification, make sure it is!
+    //
+    if ($single_address_only && ($is_wildcard || $is_range)) {
         $is_valid = false;
+    
+    // -----
+    // If the to-be-checked IP is neither a wildcard nor range specification, make sure that
+    // the single IPv4 address is valid.
+    //
+    } elseif (!$is_wildcard && !$is_range) {
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === false) {
+            $is_valid = false;
+        }
+    // -----
+    // If the to-be-checked IP is a wildcard specification, replace the trailing splat with
+    // '0' (i.e. 192.168.1.* -> 192.168.1.0) and make sure that the base address is valid.
+    //
+    } elseif ($is_wildcard) {
+        if (filter_var(str_replace('*', '0', $ip), FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === false) {
+            $is_valid = false;
+        }
+    // -----
+    // Otherwise, the to-be-checked IP is a range specification.
+    //
     } else {
-        for ($i = 0; $i < 4 && $is_valid; $i++) {
-            if (!(ctype_digit($ip_info[$i]) && $ip_info[$i] >= 0 && $ip_info[$i] <= 255)) {
-                if ($i != 3 || ($i == 3 && $single_address_only)) {
-                    $is_valid = false;
-          
-                } else {
-                    if ($ip_info[$i] != '*') {
-                        $ip_info['range'] = explode('/', $ip_info[$i]);
-                        if (count($ip_info['range']) != 2) {
-                            $is_valid = false;
-                        } else {
-                            for ($j = 0; $j < 2 && $is_valid; $j++) {
-                                if (!(ctype_digit($ip_info['range'][$j]) && $ip_info['range'][$j] >= 0 && $ip_info['range'][$j] <= 255)) {
-                                    $is_valid = false;
-                                }
-                            }
-                            if ($ip_info['range'][0] >= $ip_info['range'][1]) {
-                                $is_valid = false;
-                            }
-                        }
-                    }
-                }
+        // -----
+        // Make sure that only one range-separator is present and that the base address (the value prior
+        // to the '/') is a valid IPv4 address.
+        //
+        $range_elements = explode('/', $ip);
+        $ip_info['range'] = $range_elements;
+        if (count($range_elements) != 2 || filter_var($range_elements[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === false) {
+            $is_valid = false;
+        } else {
+            // -----
+            // Check next that the final quadrant value specified, when combined with the base, is still a valid
+            // IPv4 address (e.g. 192.168.1/a is invalid) and that the end-of-range value is greater than the start
+            // (e.g. 192.168.3/2 is invalid).
+            //
+            $segments = explode('.', $range_elements[0]);
+            $last_quad = $segments[3];
+            $ip_info['range'][0] = $last_quad;
+            $segments[3] = $range_elements[1];
+            if (filter_var(implode('.', $segments), FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === false || $last_quad >= $range_elements[1]) {
+                $is_valid = false;
             }
         }
     }
@@ -345,7 +372,6 @@ function ip_blocker_array_to_list($ip_db_array)
         
             }
         }
-    
         $return_array = $ip_list_array;
     }
     return $return_array;

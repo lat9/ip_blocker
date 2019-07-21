@@ -21,18 +21,17 @@ function ip_blocker_block($ip)
 
     $blocklist = $db->Execute('SELECT ib_blocklist FROM `' . TABLE_IP_BLOCKER . '` WHERE ib_id=1');
     $blocklist = $blocklist->fields['ib_blocklist'];
-    $blocklist = $blocklist == '' ? @unserialize(array()) : @unserialize($blocklist);
+    $blocklist = empty($blocklist) ? array() : unserialize($blocklist);
 
     if (!is_array($blocklist) || empty($blocklist)) {
         return false;
     }
 
     foreach ($blocklist as $block) {
-        if ($ip == $block || preg_match('/^' . $block . '/', $ip)) {
+        if ($ip == $block || preg_match('/^' . str_replace('*', '', $block) . '/', $ip)) {
             return true;
         }
     }
-
     return false;
 }
 
@@ -45,25 +44,24 @@ function ip_blocker_pass($ip)
 
     $passlist = $db->Execute('SELECT ib_passlist FROM `' . TABLE_IP_BLOCKER . '` WHERE ib_id=1');
     $passlist = $passlist->fields['ib_passlist'];
-    $passlist = ($passlist == '') ? @unserialize(array()) : @unserialize($passlist);
+    $passlist = (empty($passlist)) ? array() : unserialize($passlist);
 
     if (!is_array($passlist) || empty($passlist)) {
         return false;
     }
 
     foreach ($passlist as $pass) {
-        if ($ip == $pass || preg_match('/^' . $pass . '/', $ip)) {
+        if ($ip == $pass || preg_match('/^' . str_replace('*', '', $pass) . '/', $ip)) {
             return true;
         }
     }
-
     return false;
 }
 
 // -----
 // If the special login script (the IP blocker) is *not* running and the IP blocker is installed ...
 //
-if (strpos($_SERVER['SCRIPT_NAME'], 'special_login') === false && $sniffer->table_exists(TABLE_IP_BLOCKER)) {  //-v2.0.2c
+if (strpos($_SERVER['SCRIPT_NAME'], 'special_login') === false && $sniffer->table_exists(TABLE_IP_BLOCKER)) {
     $ib_result = $db->Execute('SELECT ib_power FROM `' . TABLE_IP_BLOCKER . '` WHERE ib_id=1');
 
     // -----
@@ -74,19 +72,16 @@ if (strpos($_SERVER['SCRIPT_NAME'], 'special_login') === false && $sniffer->tabl
         // ... and the current IP has either not yet been checked or has not passed the block-check ...
         //
         if (!isset($_SESSION['ip_blocker_pass']) || $_SESSION['ip_blocker_pass'] !== true) {
-            $ip = (isset($_SERVER['HTTP_X_FORWARDED_FOR']) || isset($_SERVER['HTTP_VIA'])) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
+            $ip = (string)zen_get_ip_address();
 
             // -----
             // ... and the IP is not in the pass-list but is in the blocked list, transfer control to the IP blocker's "special" login page.
             //
             if (!ip_blocker_pass($ip) && ip_blocker_block($ip)) {
-                zen_redirect('special_login.php');  //-v2.0.2c-Use built-in zen functions
-
+                zen_redirect('special_login.php');
             }
 
             $_SESSION['ip_blocker_pass'] = true;
-
         }
     }
 }
-// $_SESSION['ip_blocker_pass'] = false; (removed v2.0.2)

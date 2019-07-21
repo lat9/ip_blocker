@@ -13,16 +13,23 @@
 // --------------------
 
 // -----
-// Check if the IP submitted is in the IP block-list
+// Check if the IP submitted is in the IP block-list.  Starting with v2.2.0, check
+// also to see if invalid IP addresses should be automatically blocked.
 //
 function ip_blocker_block($ip)
 {
-    global $db, $blocklist;
+    global $db;
 
-    $blocklist = $db->Execute('SELECT ib_blocklist FROM `' . TABLE_IP_BLOCKER . '` WHERE ib_id=1');
-    $blocklist = $blocklist->fields['ib_blocklist'];
+    $query = $db->Execute('SELECT * FROM `' . TABLE_IP_BLOCKER . '` WHERE ib_id=1');
+    
+    if ($query->fields['ib_block_invalid_ip'] == 1 && filter_var((string)$_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 | FILTER_FLAG_IPV4) === false) {
+        return true;
+    }
+    
+    $blocklist = $query->fields['ib_blocklist'];
     $blocklist = empty($blocklist) ? array() : unserialize($blocklist);
 
+    
     if (!is_array($blocklist) || empty($blocklist)) {
         return false;
     }
@@ -42,7 +49,7 @@ function ip_blocker_pass($ip)
 {
     global $db;
 
-    $passlist = $db->Execute('SELECT ib_passlist FROM `' . TABLE_IP_BLOCKER . '` WHERE ib_id=1');
+    $passlist = $db->Execute('SELECT * FROM `' . TABLE_IP_BLOCKER . '` WHERE ib_id=1');
     $passlist = $passlist->fields['ib_passlist'];
     $passlist = (empty($passlist)) ? array() : unserialize($passlist);
 
@@ -62,7 +69,7 @@ function ip_blocker_pass($ip)
 // If the special login script (the IP blocker) is *not* running and the IP blocker is installed ...
 //
 if (strpos($_SERVER['SCRIPT_NAME'], 'special_login') === false && $sniffer->table_exists(TABLE_IP_BLOCKER)) {
-    $ib_result = $db->Execute('SELECT ib_power FROM `' . TABLE_IP_BLOCKER . '` WHERE ib_id=1');
+    $ib_result = $db->Execute('SELECT * FROM `' . TABLE_IP_BLOCKER . '` WHERE ib_id=1');
 
     // -----
     // ... and enabled ...

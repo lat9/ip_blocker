@@ -35,7 +35,7 @@ function ip_blocker_block($ip)
     }
 
     foreach ($blocklist as $block) {
-        if ($ip == $block || preg_match('/^' . str_replace('*', '', $block) . '/', $ip)) {
+        if ($ip == $block || strpos($ip, str_replace('*', '', $block)) === 0) {
             return true;
         }
     }
@@ -58,7 +58,7 @@ function ip_blocker_pass($ip)
     }
 
     foreach ($passlist as $pass) {
-        if ($ip == $pass || preg_match('/^' . str_replace('*', '', $pass) . '/', $ip)) {
+        if ($ip == $pass || strpos($ip, str_replace('*', '', $pass)) === 0) {
             return true;
         }
     }

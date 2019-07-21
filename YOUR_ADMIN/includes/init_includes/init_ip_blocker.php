@@ -64,3 +64,17 @@ if (!$sniffer->table_exists(TABLE_IP_BLOCKER)) {
 }
 
 $db->Execute("UPDATE " . TABLE_IP_BLOCKER . " SET ib_version = '" . IP_BLOCKER_VERSION . "'");
+
+// -----
+// Check to see if an IP-block has been requested from the whos_online tool.
+//
+if ($current_page == FILENAME_WHOS_ONLINE . '.php' && isset($_GET['action']) && $_GET['action'] == 'block' && !empty($_GET['ip'])) {
+    $ib_ip = (string)$_GET['ip'];
+    $ib_message = ip_blocker_insert_block_address($ib_ip);
+    if ($ib_message == '') {
+        $messageStack->add_session(sprintf(IB_MESSAGE_ADDRESS_BLOCKED, $ib_ip), 'success');
+    } else {
+        $messageStack->add_session($ib_message, 'error');
+    }
+    zen_redirect(zen_href_link(FILENAME_WHOS_ONLINE, zen_get_all_get_params(array('action', 'ip'))));
+}

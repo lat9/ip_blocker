@@ -67,15 +67,6 @@ require 'includes/application_top.php';
 
 require DIR_WS_CLASSES . 'currencies.php';
 $currencies = new currencies();
-//-bof-ip_blocker-lat9  *** 1 of 3 ***
-  if (isset ($_GET['action']) && $_GET['action'] == 'block') {
-    $ipb_process = 'start';
-    if (function_exists ('ip_blocker_insert_block_address')) {
-      ip_blocker_insert_block_address ($_GET['ip']);
-    }
-    zen_redirect (zen_href_link (FILENAME_WHOS_ONLINE, zen_get_all_get_params (array ('action', 'ip'))));
-  }
-//-eof-ip_blocker-lat9  *** 1 of 3 ***
 
 // same time_entry as time_last_click for 600 seconds = 10 minutes assumed to have left immediately
 $xx_mins_ago_dead = (time() - WHOIS_TIMER_DEAD);
@@ -186,15 +177,6 @@ if (!$found_entry) {
   $_GET['info'] = $candidate_info;
 }
 
-// rewind query
-//-bof-ip_blocker-lat9  *** 2 of 3 ***
-  if (method_exists ($whos_online, 'rewind')) {
-$whos_online->rewind();
-  } else {
-    $whos_online->Move (0);
-    $whos_online->MoveNext ();
-  }
-//-eof-ip_blocker-lat9  *** 2 of 3 ***
 $total_sess = $whos_online->RecordCount();
 
 $optURL = FILENAME_WHOS_ONLINE . '.php?' . zen_get_all_get_params(['t', 'na', 'ns']);
@@ -402,16 +384,16 @@ $listingURL = FILENAME_WHOS_ONLINE . '.php?' . zen_get_all_get_params(['q', 't',
                     ?>
                 </td>
 <?php
-//-bof-ip_blocker-lat9  *** 3 of 3 ***
+//-bof-ip_blocker-lat9  *** 1 of 1 ***
   $ip_blocker_link = '';
   if (function_exists ('ip_blocker_is_enabled') && ip_blocker_is_enabled ()) {
-    $ip_blocker_link = ' &mdash; <a href="' . zen_href_link (FILENAME_WHOS_ONLINE, zen_get_all_get_params (array ('info', 'action')) . 'action=block&ip=' . $item['ip_address']) . '">' . IP_BLOCKER_TEXT_BLOCK_IP . '</a>';
+        $ip_blocker_link = ' &mdash; <a href="' . zen_href_link(FILENAME_WHOS_ONLINE, zen_get_all_get_params(array('ip', 'action')) . 'action=block&ip=' . $item['ip_address']) . '">' . IP_BLOCKER_TEXT_BLOCK_IP . '</a>';
   }
 ?>
                 <td class="dataTableContentWhois" align="left" valign="top"><a href="http://whois.domaintools.com/<?php echo $item['ip_address']; ?>" target="_blank"><?php echo '<u>' . $item['ip_address'] . '</u>' . $ip_blocker_link; ?></a></td>
                 <td>&nbsp;</td>
 <?php
-//-eof-ip_blocker-lat9  *** 3 of 3 ***
+//-eof-ip_blocker-lat9  *** 1 of 1 ***
 ?>
                 <td class="dataTableContentWhois" align="center" valign="top"><?php echo date('H:i:s', $item['time_entry']); ?></td>
                 <td class="dataTableContentWhois" align="center" valign="top"><?php echo date('H:i:s', $item['time_last_click']); ?></td>

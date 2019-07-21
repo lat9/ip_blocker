@@ -6,7 +6,9 @@
 // $Id: ip_blocker.php, v1.0.0 2009/09/09 $d <noblesenior@gmail.com> $
 //
 define('HEADING_TITLE', 'IP Blocker (v%s)');
+
 define('IB_TEXT_INSTRUCTIONS', '<p>The IP Blocker prevents access to the storefront of the shop from the IP addresses defined below. Blocked IP addresses are redirected to a special login/password page which may be used to bypass the block.</p><p>For testing purposes, note that an IP address will not be blocked if a session has already been initiated from that IP address. To test, delete the zenid cookie from the browser.</p>');
+
 define('IB_TEXT_ENABLE', 'Enable IP Blocker?');
 
 define('IB_TEXT_SPECIAL_LOGIN_PASSWORD', 'Special Login Page Password');

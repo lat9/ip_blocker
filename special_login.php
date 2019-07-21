@@ -94,7 +94,7 @@ if (isset($_POST['pwd'])) {
 
     <body>
     <div class="d_w">
-        <div class="d_t">Your IP address has been blocked from this site ....</div>
+        <div class="d_t"><?php echo TEXT_SPECIAL_LOGIN_INSTRUCTIONS; ?></div>
         <form action="#" name="i_l" method="POST" target="_self">
             <div class="d_p">
                 <label for="pwd">Password</label>

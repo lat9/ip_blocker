@@ -44,12 +44,12 @@ function ip_blocker_save_iplist($iplist, $type = 'block')
     if ($iplist == '') {
         $error_ip = '';
         $empty_list = serialize(array());
-        $db->Execute('UPDATE ' . TABLE_IP_BLOCKER . " SET ib_{$type}list = '$empty_list',  ib_{$type}list_string = '', ib_date = '" . date('Y-m-d') . "' WHERE ib_id=1");
+        $db->Execute('UPDATE ' . TABLE_IP_BLOCKER . " SET ib_{$type}list = '$empty_list', ib_date = '" . date('Y-m-d') . "' WHERE ib_id=1");
     } else {
         $error_ip = ip_blocker_list_to_array($iplist, $ip_db_array);
         if ($error_ip == '') {
             $ip_db_list = serialize($ip_db_array);
-            $db->Execute('UPDATE ' . TABLE_IP_BLOCKER . " SET ib_{$type}list = '$ip_db_list', ib_{$type}list_string = '', ib_date = '" . date('Y-m-d') . "' WHERE ib_id=1");
+            $db->Execute('UPDATE ' . TABLE_IP_BLOCKER . " SET ib_{$type}list = '$ip_db_list', ib_date = '" . date('Y-m-d') . "' WHERE ib_id=1");
         }
     }
     return $error_ip;
@@ -68,6 +68,7 @@ function ip_blocker_list_to_array($iplist, &$ip_db_array, $single_address_only =
     $ip_entries = explode("\r\n", trim($iplist));
     if (!empty($ip_entries)) {
         foreach ($ip_entries as $next_ip) {
+            $next_ip = trim($next_ip);
             if (!ip_blocker_validate_address($next_ip, $ip_info, $single_address_only)) {
                 $error_ip = sprintf(ERROR_NOT_SINGLE_ADDRESS, $next_ip);
                 break;

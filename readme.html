@@ -22,7 +22,7 @@ pre { padding-left: 40px; }
 
 <body>
 <h1>IP Blocker for Zen Cart v1.5.6 and later</h1>
-<h3>Version 2.1.4</h3>
+<h3>Version 2.2.0</h3>
 <p>Current Support Thread at Zen Cart Forums: <a href="https://www.zen-cart.com/showthread.php?211251-IP-Blocker-1-5-1" target="_blank">https://www.zen-cart.com/showthread.php?211251-IP-Blocker-1-5-1</a></p>
 
 <h2>What it does</h2>
@@ -76,17 +76,21 @@ pre { padding-left: 40px; }
 
 <h2>Version History:</h2>
 <ul>
-  <li>v2.1.4, 2019-07-17 torvista
+  <li>v2.2.0, 2019-07-21 torvista, lat9
     <ul>
       <li>CHANGE: Use Zen Cart v1.5.6c version for core-file change basis.</li>
       <li>BUGFIX: Redirect to the special-login page didn't account for sites installed in a hosted sub-directory.</li>
       <li>BUGFIX: MySQL error thrown on initial installation for more strict version of MySQL.</li>
-      <li>CHANGE: Restructure admin, using zc156/HTML5 as the basic.</li>
+      <li>CHANGE: Restructure admin, using zc156/HTML5 as the basis.</li>
+      <li>CHANGE: Remove unused fields from the database.</li>
+      <li>CHANGE: Use the storefront <code>zen_get_ip_address</code> to filter the IP address prior to checking.</li>
+      <li>BUGFIX: Ensure that values retrieved from the database don't cause PHP issues.</li>
       <li>The following files were changed:<ol>
         <li>/special_login.php</li>
         <li>/includes/init_includes/init_ip_blocker.php</li>
         <li>/YOUR_ADMIN/ip_blocker.php</li>
         <li><span class="corefile">/YOUR_ADMIN/whos_online.php</span></li>
+        <li>/YOUR_ADMIN/includes/functions/extra_functions/ip_blocker_functions.php</li>
         <li>/YOUR_ADMIN/includes/init_includes/init_ip_blocker.php</li>
         <li>/YOUR_ADMIN/includes/languages/english/extra_definitions/ip_blocker.php</li>
         <li>/YOUR_ADMIN/includes/languages/english/ip_blocker.php</li>

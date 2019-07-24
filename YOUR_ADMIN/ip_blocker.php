@@ -15,7 +15,11 @@ require_once 'includes/application_top.php';
 //
 function ip_blocker_md5($password)
 {
-    return md5(md5($password . '_secure_key'));
+    if ($password === '') {
+        return '';
+    } else {
+        return md5(md5($password . '_secure_key'));
+    }
 }
 
 $message_pwd = '';
@@ -112,7 +116,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'process') {
         <div class="form-group">
             <?php echo zen_draw_label(IB_TEXT_SPECIAL_LOGIN_PASSWORD, 'pwd', 'class="col-sm-3 control-label"'); ?>
             <div class="col-sm-9 col-md-6">
-                <?php echo zen_draw_password_field('pwd', $pwd, true, 'id="pwd" class="form-control"') . zen_draw_hidden_field('current_pwd', $pwd); ?>
+                <?php echo zen_draw_input_field('pwd', $pwd, 'id="pwd" class="form-control"') . zen_draw_hidden_field('current_pwd', $pwd); ?>
                 <br /><span class="help-block"><?php echo IB_TEXT_PASSWORD_INFO; ?></span>
             </div>
         </div>

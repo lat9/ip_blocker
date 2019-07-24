@@ -18,7 +18,7 @@ define('IB_TEXT_SPECIAL_LOGIN_COUNT', 'Special Login Page Count');
 define('IB_TEXT_SPECIAL_LOGIN_COUNT_INFO', 'The <em>Special Login count</em> is the number of unsuccessful login attempts allowed from the &quot;Special Login&quot; page before the page stops taking input and simply presents a white-screen.  A value of 0 in the count permits unlimited attempts.');
 
 define('IB_AUTO_BLOCK_INVALID_IPS', 'Automatically block &quot;invalid&quot; IP addresses?');
-define('IB_AUTO_BLOCK_INFO', "The built-in Zen Cart storefront identifies invalid IP addresses as a single dot (<code>.</code>). Choose <em>Yes</em> if those addresses should be automatically blocked.");
+define('IB_AUTO_BLOCK_INFO', 'Identify whether (Yes) or not (No) invalid IPv4 and IPv6 addresses should be automatically blocked.');
 
 define('IB_TEXT_BLOCKED_RANGE', 'Blocked IP Addresses:');
 define('IB_TEXT_ALLOWED_RANGE', 'Allowed IP Addresses:');

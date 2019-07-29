@@ -7,7 +7,7 @@
 // @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
 // -----
 
-define('IP_BLOCKER_VERSION', '2.2.0-beta1');
+define('IP_BLOCKER_VERSION', '2.2.0');
 
 // -----
 // Register the IP Blocker tool into the admin menu structure.

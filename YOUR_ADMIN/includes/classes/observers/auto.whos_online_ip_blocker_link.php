@@ -20,6 +20,12 @@ class zcObserverWhosOnlineIpBlockerLink extends base
     {
         if (empty($item)) return;
 
-        $additional_ipaddress_links .= ' &mdash; <a href="' . zen_href_link(FILENAME_WHOS_ONLINE, zen_get_all_get_params(array('ip', 'action')) . 'action=block&ip=' . $item['ip_address']) . '">' . IP_BLOCKER_TEXT_BLOCK_IP . '</a>';
+        if (function_exists('ip_blocker_block) && ip_blocker_block($item['ip_address'])) {
+            $link = '[IP IS BLOCKED]';
+        } else {
+            $link = '<a href="' . zen_href_link(FILENAME_WHOS_ONLINE, zen_get_all_get_params(array('ip', 'action')) . 'action=block&ip=' . $item['ip_address']) . '">' . IP_BLOCKER_TEXT_BLOCK_IP . '</a>';
+        }
+
+        $additional_ipaddress_links .= ' &mdash; ' . $link;
     }
 }

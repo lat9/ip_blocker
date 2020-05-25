@@ -1,5 +1,6 @@
 <?php
-// Designed for Zen Cart v1.5.7 or newer
+// IP Blocker Observer
+// Adds "Block This IP" link into Admin Whos-Online page
 
 class zcObserverWhosOnlineIpBlockerLink extends base
 {
@@ -21,7 +22,7 @@ class zcObserverWhosOnlineIpBlockerLink extends base
         if (empty($item)) return;
 
         if (function_exists('ip_blocker_block) && ip_blocker_block($item['ip_address'])) {
-            $link = '[IP IS BLOCKED]';
+            $link = '[' . IP_BLOCKER_TEXT_IS_BLOCKED . ']';
         } else {
             $link = '<a href="' . zen_href_link(FILENAME_WHOS_ONLINE, zen_get_all_get_params(array('ip', 'action')) . 'action=block&ip=' . $item['ip_address']) . '">' . IP_BLOCKER_TEXT_BLOCK_IP . '</a>';
         }

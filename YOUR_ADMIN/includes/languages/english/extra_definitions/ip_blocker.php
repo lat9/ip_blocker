@@ -12,3 +12,4 @@ define('BOX_TOOLS_IP_BLOCKER', 'IP Blocker');
 define('ERROR_NOT_SINGLE_ADDRESS', 'Invalid IPv4 address/range: %s');
 define('IB_MESSAGE_ADDRESS_BLOCKED', 'The IP address (%s) has been added to the blocked-IP list.');
 define('IP_BLOCKER_TEXT_BLOCK_IP', 'Block this IP');
+define('IP_BLOCKER_TEXT_IS_BLOCKED', 'IP is Blocked');

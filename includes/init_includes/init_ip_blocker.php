@@ -65,6 +65,9 @@ function ip_blocker_pass($ip)
     return false;
 }
 
+// exit if file is being loaded from Admin
+if (IS_ADMIN_FLAG === true) return;
+
 // -----
 // If the special login script (the IP blocker) is *not* running and the IP blocker is installed ...
 //

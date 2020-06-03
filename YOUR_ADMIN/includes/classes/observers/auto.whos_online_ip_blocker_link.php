@@ -8,6 +8,7 @@ class zcObserverWhosOnlineIpBlockerLink extends base
     {
         if (function_exists('ip_blocker_is_enabled') && ip_blocker_is_enabled()) {
             $this->attach($this, ['ADMIN_WHOSONLINE_IP_LINKS']);
+            require DIR_FS_CATALOG . 'includes/init_includes/init_ip_blocker.php';
         }
     }
 
